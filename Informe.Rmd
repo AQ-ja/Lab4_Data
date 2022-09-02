@@ -1,0 +1,82 @@
+---
+title: "Lab4"
+output: html_document
+date: '2022-09-02'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Informe del Laboratorio #4, Mineria de Textos: 
+
+
+Para este laboratorio se utilizo un dataset que contiene mas de 10,500 filas y 5 columnas, en dicho data set se pueden ver: 
+
+  1. Id: Id del tweet.
+        
+  2. Keyword: Palabra clave del tweet.
+  
+  3. Location: La ubicacion donde fue enviado el tweet.
+  
+  4. Text: El contenido del tweet.
+  
+  
+## Proceso de Limpieza: 
+
+Para el proceso de limpieza, realmente solo se busco limpiar la variable de 'texto', ya que en base a esta variable se realizara el resto del laboratorio. 
+
+```{r}
+#Importamos la data cruda
+data<-read.csv("train.csv")
+
+```
+
+Entonces, una vez teniendo el dataset importado, ya podemos pasarnos a la limpieza, para lo cual se realizo lo siguiente: 
+
+```{r}
+data$text<-gsub("#[A-Za-z0-9]+|@[A-Za-z0-9]+|\\w+(?:\\.\\w+)*/\\S+", "", data$text)
+data$text<-gsub("HTTP://","",data$text)
+data$text<-gsub("HTTPS://","",data$text)
+data$text<-gsub("[^\x01-\x7F]", "",data$text)
+data$text<-gsub("B&amp;N", "",data$text)
+data$text<-gsub("#", "",data$text)
+data$text<-gsub('(s+)(A|AN|AND|THE|I)(s+)', '', data$text)
+data$text<-gsub(':', '', data$text)
+data$text<-gsub("'", '', data$text)
+data$text<-gsub("--|", '', data$text)
+data$text<-gsub('[[:punct:]]', '', data$text)
+```
+
+
+Como se puede ver, lo que estamos haciendo en esta parte es quitar todo lo que sea que no sean palabras de la variable texto, eso incluye caracteres especiales y numericos, aunque no se hizo una instruccion como tal para determinar si hay espacios vacios, pensando en la palabra clave, pero, luego de realizar esta limpieza...
+
+```{r}
+data$text<-toupper(data$text)
+```
+
+Con esto, tambien convertimos o transformamos los caracteres de minusculas a mayusculas, para un mayor orden. 
+
+
+```{r}
+#Para mayor facilidad y versatilidad, se hara un nuevo csv con los datos recien hechos. 
+write.csv(data, "train_tunned.csv", row.names = FALSE)
+```
+
+Y con esto, nos aseguramos de trabajar con un nuevo dataset, pero con nuestros cambios ya realizados. 
+
+
+## Mineria de texto
+
+
+
+## Analisis Exploratorio
+
+```{r}
+#LLamamos a la base de datos.
+data<-read.csv('train_tunned.csv')
+
+summary(data)
+```
+
+
