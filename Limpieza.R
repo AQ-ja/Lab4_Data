@@ -16,6 +16,12 @@ data$text<-gsub(':', '', data$text)
 data$text<-gsub("'", '', data$text)
 data$text<-gsub("--|", '', data$text)
 data$text<-gsub('[[:punct:]]', '', data$text)
+data$text<-gsub('http",1', '', data$text)
+data$text<-gsub('http', '', data$text)
+data$text<-gsub('http",0', '', data$text)
+data$text<-gsub(' ",0 ', '', data$text)
+data$text<-gsub(' ",1 ', '', data$text)
+
 
 #Ahora los datos quedan limpios y tambien se convierten todos a mayusculas. 
 View(data)

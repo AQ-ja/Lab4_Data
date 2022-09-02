@@ -46,6 +46,11 @@ data$text<-gsub(':', '', data$text)
 data$text<-gsub("'", '', data$text)
 data$text<-gsub("--|", '', data$text)
 data$text<-gsub('[[:punct:]]', '', data$text)
+data$text<-gsub('http",1', '', data$text)
+data$text<-gsub('http', '', data$text)
+data$text<-gsub('http",0', '', data$text)
+data$text<-gsub(' ",0 ', '', data$text)
+data$text<-gsub(' ",1 ', '', data$text)
 ```
 
 
@@ -68,15 +73,55 @@ Y con esto, nos aseguramos de trabajar con un nuevo dataset, pero con nuestros c
 
 ## Mineria de texto
 
+Lo primero sera determinar cuales son las palabras mas frecuentes...
 
+```{r include=FALSE}
+#Importamos las librerias
+library(tm)
+library(wordcloud)
 
-## Analisis Exploratorio
-
-```{r}
 #LLamamos a la base de datos.
 data<-read.csv('train_tunned.csv')
 
-summary(data)
+
+# Frecuencia 
+
+text<- readLines('train_tunned.csv')
+TextDoc <- Corpus(VectorSource(text))
+#//////////////////////////////////////////////////
+TextDoc_dtm <- TermDocumentMatrix(TextDoc)
+dtm_m <- as.matrix(TextDoc_dtm)
+# Frecuencia
+dtm_v <- sort(rowSums(dtm_m), decreasing = TRUE)
+dtm_d <- data.frame(word = names(dtm_v), frequency=dtm_v)
+
+```
+
+
+
+```{r}
+head(dtm_d, 10)
+```
+
+
+Como podemos observar estas son las 10 primeras mas usadas o mas frecuentes de todo el dataset, visto de una forma grafica, seria asi: 
+
+```{r include=FALSE}
+# Plot the most frequent words
+barplot(dtm_d[1:10,]$frequency, las = 2, names.arg = dtm_d[1:10,]$word,
+        col ="lightgreen", main ="10 palabras mas frequentes",
+        ylab = "Word frequencies")
+
+```
+
+
+Y tambien, podemos ver, de una manera mas visual y mucho menos cargada visualmente, las doscientas palabras que mas se repiten dentro de toda la base de datos. 
+```{r}
+#generate word cloud
+set.seed(1234)
+wordcloud(words = dtm_d$word, freq = dtm_d$freq, min.freq = 5,
+          max.words=500, random.order=FALSE, rot.per=0.40, 
+          colors=brewer.pal(8, "Dark2"))
 ```
 
 
